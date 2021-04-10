@@ -24,6 +24,7 @@ namespace InmoBecker.Controllers
         public ActionResult Index()
         {
             List<Propietario> lista = repositorioPropietario.ObtenerTodos();
+            ViewBag.Id = TempData["Id"];
             return View(lista);
         }
 
@@ -49,6 +50,7 @@ namespace InmoBecker.Controllers
             try
             {
                 int res = repositorioPropietario.Alta(p);
+                TempData["IdPropietario"] = p.IdPropietario;
                 return RedirectToAction(nameof(Index));
             }
             catch
