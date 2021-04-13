@@ -22,8 +22,18 @@ namespace InmoBecker.Controllers
         // GET: InquilinosController
         public ActionResult Index()
         {
-            List<Inquilino> lista = repositorioInquilino.ObtenerTodos();
-            return View(lista);
+            try 
+            {
+                List<Inquilino> lista = repositorioInquilino.ObtenerTodos();
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                return View(lista);
+            } 
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         // GET: InquilinosController/Details/5
@@ -36,6 +46,7 @@ namespace InmoBecker.Controllers
         // GET: InquilinosController/Create
         public ActionResult Create()
         {
+            
             return View();
         }
 
@@ -46,12 +57,19 @@ namespace InmoBecker.Controllers
         {
             try
             {
-                int res = repositorioInquilino.Alta(i);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    int res = repositorioInquilino.Alta(i);
+                    TempData["Id"] = i.IdInquilino;
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                    return View(i);
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                ViewBag.Errores = ex.Message;
+                return View(i);
             }
         }
 
@@ -78,16 +96,17 @@ namespace InmoBecker.Controllers
                 i.Nombre = collection["Nombre"];
                 i.Apellido = collection["Apellido"];
                 i.Dni = collection["Dni"];
-                i.Email = collection["Email"];
                 i.Telefono = collection["Telefono"];
+                i.Email = collection["Email"];
+                i.Garante = collection["Garante"];
+                i.TelGarante = collection["TelGarante"];
                 repositorioInquilino.Modificar(i);
-                TempData["Mensaje"] = "Se guardo correctamente el Inquilino";
+                TempData["Mensaje"] = "Se guardo correctamente los cambios realizados";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
                 return View(i);
             }
         }
@@ -106,7 +125,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Inquilino entidad)
+        public ActionResult Delete(int id, Inquilino i)
         {
             try
             {
@@ -117,8 +136,7 @@ namespace InmoBecker.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(entidad);
+                return View(i);
             }
         }
     }

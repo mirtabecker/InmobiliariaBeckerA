@@ -21,7 +21,7 @@ namespace InmoBecker.Models
 			List<Inquilino> res = new List<Inquilino>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email" +
+				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email, Garante, TelGarante" +
 					$" FROM Inquilinos";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -37,6 +37,8 @@ namespace InmoBecker.Models
 							Dni = reader.GetString(3),
 							Telefono = reader["Telefono"].ToString(),
 							Email = reader.GetString(5),
+							Garante = reader.GetString(6),
+							TelGarante = reader.GetString(7),
 						};
 						res.Add(i);
 					}
@@ -51,8 +53,8 @@ namespace InmoBecker.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"INSERT INTO Inquilinos (Nombre, Apellido, Dni, Telefono, Email) " +
-					$"VALUES (@nombre, @apellido, @dni, @telefono, @email)";
+				string sql = $"INSERT INTO Inquilinos (Nombre, Apellido, Dni, Telefono, Email, Garante, TelGarante) " +
+					$"VALUES (@nombre, @apellido, @dni, @telefono, @email, @garante, @telGarante)";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -61,6 +63,8 @@ namespace InmoBecker.Models
 					command.Parameters.AddWithValue("@dni", i.Dni);
 					command.Parameters.AddWithValue("@telefono", i.Telefono);
 					command.Parameters.AddWithValue("@email", i.Email);
+					command.Parameters.AddWithValue("@garante", i.Garante);
+					command.Parameters.AddWithValue("@telGarante", i.TelGarante);
 					connection.Open();
 					res = Convert.ToInt32(command.ExecuteScalar());
 					i.IdInquilino = res;
@@ -91,7 +95,7 @@ namespace InmoBecker.Models
 			Inquilino i = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email FROM Inquilinos" +
+				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email, Garante, TelGarante FROM Inquilinos" +
 					$" WHERE IdInquilino=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -109,6 +113,8 @@ namespace InmoBecker.Models
 							Dni = reader.GetString(3),
 							Telefono = reader.GetString(4),
 							Email = reader.GetString(5),
+							Garante = reader.GetString(6),
+							TelGarante = reader.GetString(7),
 						};
 					}
 					connection.Close();
@@ -121,7 +127,7 @@ namespace InmoBecker.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"UPDATE Inquilinos SET Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email " +
+				string sql = $"UPDATE Inquilinos SET Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email, Garante=@garante, TelGarante=@telGarante " +
 					$"WHERE IdInquilino = @id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -131,7 +137,10 @@ namespace InmoBecker.Models
 					command.Parameters.AddWithValue("@dni", i.Dni);
 					command.Parameters.AddWithValue("@telefono", i.Telefono);
 					command.Parameters.AddWithValue("@email", i.Email);
+					command.Parameters.AddWithValue("@garante", i.Garante);
+					command.Parameters.AddWithValue("@telGarante", i.TelGarante);
 					command.Parameters.AddWithValue("@id", i.IdInquilino);
+
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();

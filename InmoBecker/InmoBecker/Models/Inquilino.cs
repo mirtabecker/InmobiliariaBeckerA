@@ -17,5 +17,7 @@ namespace InmoBecker.Models
 		public string Telefono { get; set; }
 	
 		public string Email { get; set; }
+		public string Garante { get; set; }
+		public string TelGarante { get; set; }
 	}
 }
