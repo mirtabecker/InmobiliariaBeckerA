@@ -63,6 +63,7 @@ namespace InmoBecker.Controllers
                 {
                     int res = repositorioPropietario.Alta(p);
                     TempData["Id"] = p.IdPropietario;
+                    TempData["Mensaje"] = "Se creo con exito el PROPIETARIO";
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -132,12 +133,12 @@ namespace InmoBecker.Controllers
             try
             {
                 repositorioPropietario.Eliminar(id);
-                TempData["Mensaje"] = "Propietario eliminado con exito";
+                TempData["Mensaje"] = "PROPIETARIO eliminado con exito";
                 return RedirectToAction(nameof(Index));
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este Propietario, porque tiene un Inmueble asociado" : "Ocurrio Error";
+                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este PROPIRTARIO, porque tiene un INMEBLE ASOCIADO." : "Ocurrio Error";
                 return RedirectToAction(nameof(Index));
 
             }

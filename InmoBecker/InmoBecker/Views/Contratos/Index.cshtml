@@ -1,0 +1,65 @@
+﻿@model IEnumerable<InmoBecker.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Contratos</h1>
+
+<p>
+    <a asp-action="Create">Crear Nuevo</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCierre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InquilinoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InmuebleId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Monto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaCierre)
+                </td>
+                <td>
+                   @(item.Inquilino.Nombre+ " " + item.Inquilino.Apellido )
+                </td>
+                <td>
+                    @(item.Inmueble.Direccion+" " )
+                </td>
+                <td>
+                    @(item.Inmueble.PropietarioId)
+                </td>
+                <td>
+                    @Html.ActionLink("Editar", "Edit", new { id = item.IdContrato }) |
+                    @Html.ActionLink("Detalles", "Details", new { id = item.IdContrato }) |
+                    @Html.ActionLink("Eliminar", "Delete", new { id = item.IdContrato })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

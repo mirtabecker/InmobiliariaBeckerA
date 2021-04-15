@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,10 +14,10 @@ namespace InmoBecker.Controllers
     {
        private readonly RepositorioInmueble repositorioInmueble;
        private readonly RepositorioPropietario repositorioPropietario;
-        private readonly IConfiguration configuration;
+       private readonly IConfiguration configuration;
 
         public InmueblesController(IConfiguration configuration)
-    {
+    { 
         this.repositorioInmueble = new RepositorioInmueble(configuration);
         this.repositorioPropietario = new RepositorioPropietario(configuration);
         this.configuration = configuration;
@@ -65,6 +66,7 @@ namespace InmoBecker.Controllers
                 {
                     repositorioInmueble.Alta(i);
                     TempData["Id"] = i.IdInmueble;
+                    TempData["Mensaje"] = "Se dio de alta con exito al inmueble";
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -119,6 +121,7 @@ namespace InmoBecker.Controllers
         public ActionResult Delete(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
+            ViewBag.Error = TempData["Error"];
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             if (TempData.ContainsKey("Error"))
@@ -134,7 +137,12 @@ namespace InmoBecker.Controllers
             try
             {
                 repositorioInmueble.Eliminar(id);
-                TempData["Mensaje"] = "El inmueble se elimino con exito";
+                TempData["Mensaje"] = "El Inmueble se elimino con exito";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este INMUEBLE, porque tiene un CONTRATO ASOCIADO" : "Ocurrio Error";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

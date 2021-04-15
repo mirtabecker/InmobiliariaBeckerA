@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace InmoBecker.Controllers
             {
                 List<Inquilino> lista = repositorioInquilino.ObtenerTodos();
                 ViewBag.Id = TempData["Id"];
+                ViewData["Error"] = TempData["Error"];
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
@@ -61,6 +63,7 @@ namespace InmoBecker.Controllers
                 {
                     int res = repositorioInquilino.Alta(i);
                     TempData["Id"] = i.IdInquilino;
+                    TempData["Mensaje"] = "Se agrego correctamente el INQUILINO";
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -115,6 +118,7 @@ namespace InmoBecker.Controllers
         public ActionResult Delete(int id)
         {
             var i = repositorioInquilino.ObtenerPorId(id);
+            ViewBag.Error = TempData["Error"];
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mesaje = TempData["Mensaje"];
             if (TempData.ContainsKey("Error"))
@@ -130,7 +134,12 @@ namespace InmoBecker.Controllers
             try
             {
                 repositorioInquilino.Eliminar(id);
-                TempData["Mensaje"] = "Se Elimino correctamente el Inquilino";
+                TempData["Mensaje"] = "Se Elimino correctamente el INQUILINO";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (SqlException ex)
+            {
+                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este INQUILINO, porque tiene un CONTRATO ASOCIADO" : "Ocurrio Error";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)

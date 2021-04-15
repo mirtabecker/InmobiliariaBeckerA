@@ -41,8 +41,7 @@ namespace InmoBecker.Models
 							{
 								IdPropietario = reader.GetInt32(4),
 								Nombre = reader.GetString(5),
-								Apellido = reader.GetString(6),
-								
+								Apellido = reader.GetString(6),								
 							}
 						};
 						res.Add(i);

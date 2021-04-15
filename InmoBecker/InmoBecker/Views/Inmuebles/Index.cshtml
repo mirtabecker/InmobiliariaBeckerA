@@ -12,9 +12,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdInmueble)
-            </th>
+           
             <th>
                 @Html.DisplayNameFor(model => model.Direccion)
             </th>
@@ -33,9 +31,7 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdInmueble)
-            </td>
+            
             <td>
                 @Html.DisplayFor(modelItem => item.Direccion)
             </td>
@@ -46,7 +42,7 @@
                 @Html.DisplayFor(modelItem => item.Superficie)
             </td>
             <td>
-                @(item.Duenio.Nombre + " " + item.Duenio.Apellido + item.Duenio.Telefono)
+                @(item.Duenio.Nombre + " " + item.Duenio.Apellido)
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id = item.IdInmueble }) |
