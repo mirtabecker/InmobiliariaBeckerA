@@ -20,7 +20,7 @@ namespace InmoBecker.Models
 			List<Contrato> res = new List<Contrato>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = "SELECT IdContrato, Monto, FechaInicio, FechaCierre, InquilinoId, InmuebleId, i.Nombre, i.Apellido, n.Direccion, n.PropietarioId " +
+				string sql = "SELECT IdContrato, Monto, FechaInicio, FechaCierre, InquilinoId, InmuebleId, i.Nombre, i.Apellido, n.Direccion " +
 					" FROM Contratos c INNER JOIN Inquilinos i ON c.InquilinoId = i.IdInquilino INNER JOIN Inmuebles n ON c.InmuebleId = n.IdInmueble";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -46,7 +46,7 @@ namespace InmoBecker.Models
 							Inmueble = new Inmueble
 							{
 								Direccion = reader.GetString(8),
-								PropietarioId = reader.GetInt32(9),
+								
 							}
 
 						};	
@@ -87,7 +87,7 @@ namespace InmoBecker.Models
 			Contrato c= null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdContrato, Monto, FechaInicio, FechaCierre, InquilinoId, InmuebleId, i.Nombre, i.Apellido, n.Direccion, n.PropietarioId " +
+				string sql = $"SELECT IdContrato, Monto, FechaInicio, FechaCierre, InquilinoId, InmuebleId, i.Nombre, i.Apellido, n.Direccion " +
 					" FROM Contratos c INNER JOIN Inquilinos i ON c.InquilinoId = i.IdInquilino INNER JOIN Inmuebles n ON c.InmuebleId = n.IdInmueble" +
 					$" WHERE IdContrato=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -115,7 +115,7 @@ namespace InmoBecker.Models
 							Inmueble = new Inmueble
 							{
 								Direccion = reader.GetString(8),
-								PropietarioId = reader.GetInt32(9),
+								
 								
 							}
 

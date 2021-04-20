@@ -138,7 +138,7 @@ namespace InmoBecker.Controllers
             }
             catch (SqlException ex)
             {
-                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este PROPIRTARIO, porque tiene un INMEBLE ASOCIADO." : "Ocurrio Error";
+                TempData["Error"] = ex.Number == 547 ? "No se puede eliminar este PROPIRTARIO, porque tiene un INMUEBLE ASOCIADO." : "Ocurrio Error";
                 return RedirectToAction(nameof(Index));
 
             }

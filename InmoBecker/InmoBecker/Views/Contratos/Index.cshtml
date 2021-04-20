@@ -34,32 +34,31 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                
-                <td>
-                    @Html.DisplayFor(modelItem => item.Monto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaCierre)
-                </td>
-                <td>
-                   @(item.Inquilino.Nombre+ " " + item.Inquilino.Apellido )
-                </td>
-                <td>
-                    @(item.Inmueble.Direccion+" " )
-                </td>
-                <td>
-                    @(item.Inmueble.PropietarioId)
-                </td>
-                <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.IdContrato }) |
-                    @Html.ActionLink("Detalles", "Details", new { id = item.IdContrato }) |
-                    @Html.ActionLink("Eliminar", "Delete", new { id = item.IdContrato })
-                </td>
-            </tr>
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCierre)
+            </td>
+            <td>
+                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido )
+            </td>
+            <td>
+                @(item.Inmueble.Direccion + " " )
+            </td>
+         
+            <td>
+                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.IdContrato" title="Detalles">Detalles</a>
+                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">Editar</a>
+                <a class="btn btn-primary" asp-controller="Pagos" asp-action="Index" asp-route-id="@item.IdContrato" title="Pagos">Pagos</a>
+                <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.IdContrato" title="Eliminar">Eliminar</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

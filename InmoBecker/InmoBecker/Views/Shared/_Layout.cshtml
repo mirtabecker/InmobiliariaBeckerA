@@ -9,96 +9,107 @@
 </head>
 <body>
     <header>
+
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InmoBecker</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+            <div class="topnav">
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-university"></i> InmoBecker</a>
+                    <a class="navbar-brand text-black-50 active" asp-area="" asp-controller="Home" asp-action="Index" style="font-family:'Century Gothic'; font-weight:500;"><i class="fa fa-building-o"></i> Inicio</a>
+                    <a class="navbar-brand text-black-50 active" asp-area="" asp-controller="Usuarios" asp-action="Login"><i class="fa fa-sign-in"></i> Acceder</a>
+                }
+                else
+                {
+                    <ul class="navbar-nav">
+                        @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+
+                        {
+                            <li class="nav-item">
+                                <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fa fa-address-book-o"></i> Usuarios</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-university"></i> InmoBecker</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietarios" asp-action="Index">Propietarios</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilinos" asp-action="Index">Inquilinos</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmuebles" asp-action="Index">Inmuebles</a>
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fa fa-university"></i> Usuarios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Contratos" asp-action="Index">Contratos</a>
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Propietarios" asp-action="Index"><i class="fa fa-users"></i> Propietarios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Inquilinos" asp-action="Index"><i class="fa fa-address-card"></i> Inquilinos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Inmuebles" asp-action="Index"><i class="fa fa-fw fa-home"></i> Inmuebles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Contratos" asp-action="Index"><i class="fa fa-file-text-o"></i> Contratos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Logout"><i class="fa fa-power-off"></i> Cerrar Sesion</a>}
                         </li>
                     </ul>
-                </div>
+
+                }
             </div>
         </nav>
     </header>
-    <main role="main" class="container">
-        <div class="">
-            @if (ViewBag.Id != null)
-            {//alta exitosa
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>¡Éxitoso!</strong> Fue dada de alta con id: @ViewBag.Id
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        X
-                    </button>
-                </div>
+        <main role="main" class="container">
+            <div class="">
+                @if (ViewBag.Id != null)
+                {//alta exitosa
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>¡Éxitoso!</strong> Fue dada de alta con id: @ViewBag.Id
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                              
+                        </button>
+                    </div>
+                }
 
-            }
+                else if (ViewBag.Errores != null)
+                {//alta exitosa
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>¡Error!</strong> Faltan completar campos!! @ViewBag.Errores
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            X
+                        </button>
+                    </div>
+                }
+                else if (ViewBag.Mensaje != null)
+                {//cartel general
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Información:</strong> @ViewBag.Mensaje
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            X
+                        </button>
+                    </div>
+                }
 
-            else if (ViewBag.Errores != null)
-            {//alta exitosa
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>¡Error!</strong> Faltan completar campos!! @ViewBag.Errores
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        X
-                    </button>
-                </div>
-            }
-            else if (ViewBag.Mensaje != null)
-            {//cartel general
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <strong>Información:</strong> @ViewBag.Mensaje
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                       X
-                    </button>
-                </div>
-            }
+                else if (!String.IsNullOrEmpty(ViewBag.Error))
+                {
+                    <environment names="Development">
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <strong>Error:</strong>@ViewBag.Error
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                X
+                            </button>
+                            <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
+                            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                                @ViewBag.StackTrace
+                            </div>
+                        </div>
+                    </environment>
+                }
 
-            else if (!String.IsNullOrEmpty(ViewBag.Error))
-            {
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <strong>Error:</strong>@ViewBag.Error
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        X
-                    </button>
-
-                </div>
-            }
-
-
-        </div>
-    </main>
-
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+                @RenderBody()
+            </div>
+           
         </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+
+    <footer class="footer">
         <div class="container">
             &copy; 2021 - InmoBecker - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
