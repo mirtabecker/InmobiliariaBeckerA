@@ -15,16 +15,18 @@ namespace InmoBecker.Models
 
         }
 
-		public List<Pago> ObtenerTodos()
+		public List<Pago> ObtenerTodos(int id)
 		{
 			List<Pago> res = new List<Pago>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InmuebleId, c.InquilinoId" +
-					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato";
-
+				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InquilinoId, c.InmuebleId " +
+					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato " +
+					$" WHERE IdPago = @idContrato ";
+				  
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
+					command.Parameters.Add("@idContrato", SqlDbType.Int).Value = id;
 					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();
@@ -41,8 +43,8 @@ namespace InmoBecker.Models
 							{
 								IdContrato = reader.GetInt32(4),
 								Monto = reader.GetInt32(5),
-								InmuebleId = reader.GetInt32(6),
 								InquilinoId = reader.GetInt32(7),
+								InmuebleId = reader.GetInt32(6),
 							}
 						};
 						res.Add(p);
@@ -58,12 +60,12 @@ namespace InmoBecker.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"INSERT INTO Pagos (NroPago, Fecha, Importe, ContratoId) " +
-					"VALUES (@nroPago, @fecha, @importe, @contratoId);" +
+					"VALUES (@pago, @fecha, @importe, @contratoId);" +
 					"SELECT SCOPE_IDENTITY();";//devuelve el id insertado (LAST_INSERT_ID para mysql)
 				using (var command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.AddWithValue("@nroPago", p.NroPago);
+					command.Parameters.AddWithValue("@pago", p.NroPago);
 					command.Parameters.AddWithValue("@fecha", p.Fecha);
 					command.Parameters.AddWithValue("@importe", p.Importe);
 					command.Parameters.AddWithValue("@contratoId", p.ContratoId);

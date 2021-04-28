@@ -31,7 +31,7 @@ namespace InmoBecker.Controllers
             this.environment = environment;
         }
        
-        [Authorize(Policy = "Administrador")]
+        
         public ActionResult Index()
         {
             var usuarios = repositorioUsuario.ObtenerTodos();
@@ -61,7 +61,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: UsuariosController/Details/5
-        [Authorize(Policy = "Administrador")]
+     
         public ActionResult Details(int id)
         {
             var e = repositorioUsuario.ObtenerPorId(id);
@@ -79,7 +79,7 @@ namespace InmoBecker.Controllers
         // POST: UsuariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+       
         public ActionResult Create(Usuario u)
         {
             if (!ModelState.IsValid)
@@ -95,8 +95,8 @@ namespace InmoBecker.Controllers
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
                 u.Clave = hashed;
-                u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
-                var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
+                //u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
+                //var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
                 int res = repositorioUsuario.Alta(u);
                 if (u.AvatarFile != null && u.IdUsuario > 0)
                 {
@@ -148,10 +148,12 @@ namespace InmoBecker.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
+
         public ActionResult Edit(int id, Usuario u)
         { 
             try
             {
+                u.IdUsuario = id;
                 if (!User.IsInRole("Administrador"))
                 {
                     var usuarioActual = repositorioUsuario.ObtenerPorEmail(User.Identity.Name);
@@ -248,7 +250,6 @@ namespace InmoBecker.Controllers
         [Authorize]
         public IActionResult Avatar(int id)
         {
-
             try
             {
                 var u = repositorioUsuario.ObtenerPorId(id);
@@ -268,6 +269,7 @@ namespace InmoBecker.Controllers
         }
         [AllowAnonymous]
         // GET: Usuarios/Login/
+        [Authorize(Policy = "Administrador")]
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
@@ -278,6 +280,7 @@ namespace InmoBecker.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public async Task<IActionResult> Login(LoginView login)
         {
             try

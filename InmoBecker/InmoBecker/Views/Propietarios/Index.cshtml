@@ -2,64 +2,70 @@
 
 @{
     ViewData["Title"] = "Propietarios";
-   
+
 }
 
+<h1>Propietarios</h1>
 
+<p>
+    <a asp-action="Create">Crear Nuevo</a>
+</p>
 
-    
+<form asp-action="Buscar" method="get" class="form-inline">
+    <input class="form-control mr-sm-2" name="q" type="search" placeholder="Nombre o Email" aria-label="Search">
+    <input type="submit" value="Buscar" class="btn btn-outline-secondary my-2 my-sm-0">
+</form>
+<table class="table">
+    <thead>
+        <tr>
 
-        <h1>Propietarios</h1>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
 
-        <p>
-            <a asp-action="Create">Crear Nuevo</a>
-        </p>
-        <table class="table">
-            <thead>
-                <tr>
-                    
-                    <th>
-                        @Html.DisplayNameFor(model => model.Nombre)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Apellido)
-                    </th>
-                   
-                    <th>
-                        @Html.DisplayNameFor(model => model.Telefono)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Email)
-                    </th>
-                    
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Nombre)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Apellido)
-                        </td>
-                        
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Telefono)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Email)
-                        </td>
-                        
-                        <td>
-                            @Html.ActionLink("Editar", "Edit", new { id = item.IdPropietario }) |
-                            @Html.ActionLink("Detalles", "Details", new { id = item.IdPropietario }) |
-                            @Html.ActionLink("Eliminar", "Delete", new { id = item.IdPropietario })
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+
+                <td>
+                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdPropietario" title="Editar">Editar</a>
+                    <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.IdPropietario" title="Detalle">Detalles</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPropietario" title="Eliminar">Eliminar</a>
+                    } 
+                    <a class="btn btn-outline-info" asp-action="InmueblesPorPropietario" asp-controller="Inmuebles" asp-route-id="@item.IdPropietario" title="Inmuebles">Inmuebles</a>
+
+                    </td>
+            </tr>
+        }
+    </tbody>
+</table>

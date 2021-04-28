@@ -1,10 +1,10 @@
 ﻿@model InmoBecker.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Registrar";
 }
 
-<h1>Crear</h1>
+<h1>Registrar</h1>
 
 <h4>Inmueble</h4>
 <hr />
@@ -28,6 +28,26 @@
                 <span asp-validation-for="Superficie" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <input asp-for="Tipo" class="form-control" />
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" />
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                <select class="form-control" name="Estado">
+                    @foreach (var kvp in (IDictionary<int, string>)ViewBag.Estados)
+                    {
+                        @:<option value="@kvp.Key">@kvp.Value</option>
+                    }
+                </select>
+                <span asp-validation-for="Estado" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label class="control-label">Propietario</label>
                 <select class="form-control" name="PropietarioId">
                     @foreach (var item in (List<Propietario>)ViewBag.Propietarios)
@@ -38,11 +58,13 @@
                 <span asp-validation-for="PropietarioId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear" class="btn btn-primary" />
+                <input type="submit" value="Registrar" class="btn btn-primary" />
                 <br>
-                <a class="btn btn-secondary" asp-action="Index">Volver a la lista</a>
+                <div>
+                    <a class="btn btn-secondary" asp-action="Index">Volver a la lista</a>
+                </div>
+
             </div>
         </form>
     </div>
-</div>
-
+    

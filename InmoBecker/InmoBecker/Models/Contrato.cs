@@ -12,19 +12,19 @@ namespace InmoBecker.Models
         [Display(Name ="Codigo")]
         public int IdContrato { get; set; }
         public int Monto { get; set; }
-        [Display(Name = "Fecha de Inicio")]
+        [Display(Name = "Inicia")]
         [DataType(DataType.Date)]
         public DateTime FechaInicio { get; set; }
         [Required]
         [DataType(DataType.Date)]
-        [Display(Name ="Fecha de Cierre")]
+        [Display(Name ="Finaliza")]
         public DateTime FechaCierre { get; set; }
         [Display(Name ="Inquilino")]
         public int InquilinoId { get; set; }
-        [ForeignKey(nameof(InquilinoId))]
+        [ForeignKey("InquilinoId")]
         [Display(Name = "Direccion")]
         public int InmuebleId { get; set; }
-        [ForeignKey(nameof(InmuebleId))]
+        [ForeignKey("InmuebleId")]
         public Inquilino Inquilino { get; set; }
         public Inmueble Inmueble { get; set; }
 

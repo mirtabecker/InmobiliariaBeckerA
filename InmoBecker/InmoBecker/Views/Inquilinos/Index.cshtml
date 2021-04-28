@@ -49,9 +49,12 @@
             </td>
             
             <td>
-                @Html.ActionLink("Editar", "Edit", new { id = item.IdInquilino }) |
-                @Html.ActionLink("Detalles", "Details", new { id = item.IdInquilino }) |
-                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdInquilino })
+                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdInquilino" title="Editar">Editar</a>
+                <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.IdInquilino" title="Detalles">Detallers</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdInquilino" title="Eliminar">Eliminar</a>
+                }
             </td>
         </tr>
 }

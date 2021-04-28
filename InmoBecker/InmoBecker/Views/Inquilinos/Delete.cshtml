@@ -60,9 +60,11 @@
             @Html.DisplayFor(model => model.TelGarante)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-        <a asp-action="Index">Volver a la lista</a>
-    </form>
-</div>
+    @if (User.IsInRole("Administrador"))
+    {
+        <form asp-action="Delete">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+            <a asp-action="Index">Volver a la lista</a>
+        </form>
+    }
+    </div>

@@ -1,4 +1,5 @@
 ﻿using InmoBecker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -14,11 +15,13 @@ namespace InmoBecker.Controllers
     public class PropietariosController : Controller
     {
         private readonly RepositorioPropietario repositorioPropietario;
+        private readonly RepositorioInmueble repositorioInmueble;
         private readonly IConfiguration configuration;
 
         public PropietariosController(IConfiguration configuration)
         {
             this.repositorioPropietario = new RepositorioPropietario(configuration);
+            this.repositorioInmueble = new RepositorioInmueble(configuration);
             this.configuration = configuration;
         }
         // GET: PropietariosController
@@ -30,7 +33,7 @@ namespace InmoBecker.Controllers
                 ViewBag.Id = TempData["Id"];
                 ViewData["Error"] = TempData["Error"];
                 if (TempData.ContainsKey("Mensaje"))
-                        ViewBag.Mensaje = TempData["Mensaje"];
+                ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
             }
             catch (Exception ex)
@@ -39,9 +42,39 @@ namespace InmoBecker.Controllers
             }
         }
 
-        // GET: PropietariosController/Details/5
-        public ActionResult Details(int id)
+        // GET: Propietario/Buscar/5
+        public ActionResult Buscar(string q)
         {
+            try
+            {
+                var lista = repositorioPropietario.BuscarPorNombre(q);
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                if (lista.Count == 0)
+                {
+                    var propietario = repositorioPropietario.ObtenerPorEmail(q);
+                    if (propietario == null)
+                    {
+                        TempData["Mensaje"] = "No se han encontrado propietarios con ese nombre o email";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                        return View("Details", propietario);
+                }
+                return View("Index", lista);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrace = ex.StackTrace;
+                return View();
+            }
+        }
+
+        // GET: PropietariosController/Details/5
+       
+        public ActionResult Details(int id)
+        { 
             var p = repositorioPropietario.ObtenerPorId(id);
             return View(p);
         }
@@ -55,6 +88,7 @@ namespace InmoBecker.Controllers
         // POST: PropietariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+    
         public ActionResult Create(Propietario p)
         {
             try
@@ -78,6 +112,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: PropietariosController/Edit/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             var p = repositorioPropietario.ObtenerPorId(id);
@@ -91,29 +126,26 @@ namespace InmoBecker.Controllers
         // POST: PropietariosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Edit(int id,Propietario p)
         {
-            Propietario p = null;
             try
             {
-                p = repositorioPropietario.ObtenerPorId(id);
-                p.Nombre = collection["Nombre"];
-                p.Apellido = collection["Apellido"];
-                p.Dni = collection["Dni"];
-                p.Email = collection["Email"];
-                p.Telefono = collection["Telefono"];
+                p.IdPropietario = id;
                 repositorioPropietario.Modificar(p);
-                TempData["Mensaje"] = "Se guardo correctamente los cambios realizados!!";
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
                 return View(p);
             }
         }
 
         // GET: PropietariosController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var p = repositorioPropietario.ObtenerPorId(id);
@@ -128,6 +160,7 @@ namespace InmoBecker.Controllers
         // POST: PropietariosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Propietario p)
         {
             try

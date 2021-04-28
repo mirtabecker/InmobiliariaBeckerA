@@ -1,7 +1,10 @@
 ﻿@model InmoBecker.Models.Contrato
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Crear";
+
+    DateTime inicio = ViewBag.Desde;
+    DateTime fin = ViewBag.Hasta;
  }
 
 <h1>Crear</h1>
@@ -13,21 +16,21 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Monto" class="control-label"></label>
-                <input asp-for="Monto" class="form-control" />
+                <input asp-for="Monto" id="iPrecio" class="form-control" readonly value="@(((List<Inmueble>)ViewBag.Inmuebles)[0].Precio)" />
                 <span asp-validation-for="Monto" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control" />
+                <input type="text" name="FechaInicio" class="form-control" value="@inicio.Date" readonly />
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaCierre" class="control-label"></label>
-                <input asp-for="FechaCierre" class="form-control" />
+                <input type="text" name="FechaCierre" class="form-control" value="@fin.Date" readonly />
                 <span asp-validation-for="FechaCierre" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Inquilinos</label>
+                <label asp-for="InquilinoId" class="control-label">Inquilinos</label>
                 <select class="form-control" name="InquilinoId">
                     @foreach (var item in (List<Inquilino>)ViewBag.Inquilinos)
                     {
@@ -37,22 +40,31 @@
                 <span asp-validation-for="InquilinoId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label class="control-label">Inmueble</label>
-                <select class="form-control" name="InmuebleId">
+                <label asp-for="InmuebleId" class="control-label"></label>
+                <select class="form-control" name="InmuebleId" id="inmuebles" onchange="inmuebleCambiado()">
                     @foreach (var item in (List<Inmueble>)ViewBag.Inmuebles)
                     {
-                        <option value="@item.IdInmueble">@(item.Direccion + " ")</option>
+                        <option value="@item.IdInmueble" data-precio="@item.Precio">@(item.Direccion)</option>
                     }
                 </select>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Crear nuevo" class="btn btn-primary" />
+                <input type="submit" value="Crear" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Volver a la lista</a>
+    <a class="btn btn-primary" asp-action="Index">Volver</a>
 </div>
+<script>
+    function inmuebleCambiado(e) {
+        console.log("error");
+        var input = document.querySelector("#inmuebles");
+        var seleccionada = input.options[input.selectedIndex];
+        document.querySelector("#iPrecio").value = seleccionada.getAttribute("data-precio");
+
+    }
+</script>

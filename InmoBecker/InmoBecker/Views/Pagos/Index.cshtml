@@ -2,15 +2,18 @@
 
 @{
     ViewData["Title"] = "Pagos";
-   
+    Contrato contrato = ViewBag.Contrato; 
 }
 
 
 <h1>Pagos</h1>
-
+<h6 class="alert alert-info">
+    Pagos correspondientes al contrato Nro: @contrato.IdContrato a Nombre de @contrato.Inquilino.Nombre @contrato.Inquilino.Apellido
+    por el inmueble ubicado en @contrato.Inmueble.Direccion
+</h6>
 
 <p>
-    <a asp-action="Create">Crear Nuevo</a>
+    <a class="btn btn-primary" asp-action="Create" asp-route-id="@contrato.IdContrato">Nuevo Pago</a>
 </p>
 <table class="table">
     <thead>
@@ -49,11 +52,16 @@
                 </td>
               
                 <td>
-                    @Html.ActionLink("Editar", "Edit", new { id = item.IdPago }) |
-                    @Html.ActionLink("Detalles", "Details", new { id = item.IdPago }) |
-                    @Html.ActionLink("Eliminar", "Delete", new { id = item.IdPago })
+                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdPago" title="Editar">Editar</a>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdPago" title="Eliminar">Eliminar</a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<div>
+    <a class="btn btn-secondary" asp-controller="Contratos" asp-action="Index">Volver</a>
+</div>

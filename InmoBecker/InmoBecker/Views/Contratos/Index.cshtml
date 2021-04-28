@@ -1,18 +1,29 @@
 ﻿@model IEnumerable<InmoBecker.Models.Contrato>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Alquileres";
 }
 
-<h1>Contratos</h1>
 
-<p>
-    <a asp-action="Create">Crear Nuevo</a>
-</p>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+        <a class="navbar-brand" asp-action="Index">Alquileres</a>
+        
+        <form asp-action="Create" method="get" class="form-inline my-2 my-lg-0">
+            Desde:<input class="form-control mr-sm-2" name="Desde" type="date" required>
+            Hasta:<input class="form-control mr-sm-2" name="Hasta" type="date" required>
+            <input type="submit" value="Crear Contrato" class="btn btn-outline-primary my-2 my-sm-0">
+        </form>
+    </div>
+</nav>
+
 <table class="table">
     <thead>
         <tr>
-            
+           
             <th>
                 @Html.DisplayNameFor(model => model.Monto)
             </th>
@@ -35,7 +46,7 @@
         @foreach (var item in Model)
         {
         <tr>
-
+           
             <td>
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
@@ -49,14 +60,19 @@
                 @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido )
             </td>
             <td>
-                @(item.Inmueble.Direccion + " " )
+                @(item.Inmueble.Direccion)
             </td>
-         
+
             <td>
-                <a class="btn btn-primary" asp-action="Details" asp-route-id="@item.IdContrato" title="Detalles">Detalles</a>
-                <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">Editar</a>
-                <a class="btn btn-primary" asp-controller="Pagos" asp-action="Index" asp-route-id="@item.IdContrato" title="Pagos">Pagos</a>
-                <a class="btn btn-primary" asp-action="Delete" asp-route-id="@item.IdContrato" title="Eliminar">Eliminar</a>
+
+                <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.IdContrato" title="Detalles">Detalles</a>
+                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">Editar</a>
+                <a class="btn btn-outline-info" asp-controller="Pagos" asp-action="Index" asp-route-id="@item.IdContrato" title="Pagos">Pagos</a>
+                <a class="btn btn-outline-info" asp-action="Renovar" asp-route-id="@item.IdContrato" title="Renovar">Renovar</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdContrato" title="Eliminar">Eliminar</a>
+                }
             </td>
         </tr>
         }

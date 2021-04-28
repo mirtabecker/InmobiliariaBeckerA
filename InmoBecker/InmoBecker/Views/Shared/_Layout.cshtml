@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - InmoBecker</title>
+    <title>@ViewData["Title"] - InmoBecker -</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
-<body>
+<body style="background-color:lightblue">
     <header>
 
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
@@ -21,37 +21,33 @@
                 else
                 {
                     <ul class="navbar-nav">
-                        @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+                        @if (User.IsInRole("Administrador"))
 
                         {
-                            <li class="nav-item">
-                                <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fa fa-address-book-o"></i> Usuarios</a>
-                            </li>
-                        }
                         <li class="nav-item">
                             <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Home" asp-action="Index"><i class="fa fa-university"></i> InmoBecker</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fa fa-university"></i> Usuarios</a>
+                            <a class="py-2 nav-link text-black-50 font-weight-bold" asp-area="" asp-controller="Usuarios" asp-action="Index"><i class="fas fa-users"></i>&ensp; Usuarios</a>
+                        </li>
+                        }
+                        <li class="nav-item">
+                            <a class="py-2 nav-link text-black-50 font-weight-bold" asp-area="" asp-controller="Propietarios" asp-action="Index"><i class="fas fa-user-tie"></i>&ensp; Propietarios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Propietarios" asp-action="Index"><i class="fa fa-users"></i> Propietarios</a>
+                            <a class="py-2 nav-link text-black-50 font-weight-bold" asp-area="" asp-controller="Inquilinos" asp-action="Index"><i class="fas fa-house-user"></i>&ensp; Inquilinos</a>
                         </li>
                         <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Inquilinos" asp-action="Index"><i class="fa fa-address-card"></i> Inquilinos</a>
+                            <a class="py-2 nav-link text-black-50 font-weight-bold" asp-area="" asp-controller="Inmuebles" asp-action="Index"><i class="fas fa-building"></i>&ensp; Inmuebles</a>
                         </li>
                         <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Inmuebles" asp-action="Index"><i class="fa fa-fw fa-home"></i> Inmuebles</a>
+                            <a class="py-2 nav-link text-black-50 font-weight-bold" asp-area="" asp-controller="Contratos" asp-action="Index"><i class="fas fa-file-contract"></i>&ensp; Alquileres</a>
                         </li>
                         <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Contratos" asp-action="Index"><i class="fa fa-file-text-o"></i> Contratos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="navbar-brand text-black-50 active" style="font-family:'Century Gothic'; font-weight:500;" asp-area="" asp-controller="Usuarios" asp-action="Logout"><i class="fa fa-power-off"></i> Cerrar Sesion</a>}
+                            <a class="py-2 nav-link text-black-50 font-weight-bold"  asp-area="" asp-controller="Usuarios" asp-action="Logout"><i class="fa fa-power-off"></i> Cerrar Sesion </a>
                         </li>
                     </ul>
-
                 }
             </div>
         </nav>
@@ -63,7 +59,7 @@
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <strong>¡Éxitoso!</strong> Fue dada de alta con id: @ViewBag.Id
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                              
+                           X   
                         </button>
                     </div>
                 }

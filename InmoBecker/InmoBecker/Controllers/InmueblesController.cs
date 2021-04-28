@@ -1,4 +1,5 @@
 ﻿using InmoBecker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -26,22 +27,24 @@ namespace InmoBecker.Controllers
         // GET: InmueblesController
         public ActionResult Index()
         {
-            try
-            {
-                List<Inmueble> lista = repositorioInmueble.ObtenerTodos();
+                var lista = repositorioInmueble.ObtenerTodos();
                 ViewBag.Id = TempData["Id"];
                 ViewData["Error"] = TempData["Error"];
                 if (TempData.ContainsKey("Mensaje"))
-                    ViewBag.Mensaje = TempData["Mensaje"];
+                ViewBag.Mensaje = TempData["Mensaje"];
                 return View(lista);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            
         }
-            // GET: InmueblesController/Details/5
-            public ActionResult Details(int id)
+
+        public ActionResult InmueblesPorPropietario(int id)
+        {
+                var lista = repositorioInmueble.BuscarPorPropietario(id);
+                //ViewBag.Id = id;
+                return View(lista); 
+        }
+
+        // GET: InmueblesController/Details/5
+        public ActionResult Details(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
             return View(i);
@@ -52,12 +55,14 @@ namespace InmoBecker.Controllers
         {
 
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.Estados = Inmueble.ObtenerEstados();
             return View();
         }
 
         // POST: InmueblesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        
         public  ActionResult Create(Inmueble i)
         {
             try
@@ -71,12 +76,14 @@ namespace InmoBecker.Controllers
                 }
                 else
                 {
+                   
                     ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
                     return View(i);
                 }
             }
             catch (Exception ex)
             {
+               
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrete = ex.StackTrace;
                 return View(i);
@@ -84,10 +91,12 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InmueblesController/Edit/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
             ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+            ViewBag.Estados = Inmueble.ObtenerEstados();
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             if (TempData.ContainsKey("Error"))
@@ -98,6 +107,7 @@ namespace InmoBecker.Controllers
         // POST: InmueblesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Inmueble i)
         {
             try
@@ -110,7 +120,6 @@ namespace InmoBecker.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(i);
@@ -118,6 +127,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InmueblesController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
@@ -132,6 +142,7 @@ namespace InmoBecker.Controllers
         // POST: InmueblesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Inmueble i)
         {
             try
@@ -148,6 +159,7 @@ namespace InmoBecker.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
                 return View(i);
             }
         }

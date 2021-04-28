@@ -2,19 +2,21 @@
 
 @{
     ViewData["Title"] = "Create";
+    Contrato contrato = ViewBag.Contrato;
+    int pago = ViewBag.Pago + 1;
 }
 
-<h1>Create</h1>
+<h1>Registrar</h1>
 
 <h4>Pago</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="NroPago" class="control-label"></label>
-                <input asp-for="NroPago" class="form-control" />
+                <input asp-for="NroPago" class="form-control" value="@pago" readonly />
                 <span asp-validation-for="NroPago" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -24,25 +26,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Importe" class="control-label"></label>
-                <input asp-for="Importe" class="form-control" />
+                <input asp-for="Importe" class="form-control" value="@contrato.Monto" readonly />
                 <span asp-validation-for="Importe" class="text-danger"></span>
             </div>
+            <input type="hidden" name="ContratoId" value="@contrato.IdContrato" />
             <div class="form-group">
-                <label asp-for="ContratoId" class="control-label"></label>
-                <input asp-for="ContratoId" class="form-control" />
-                <span asp-validation-for="ContratoId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Guardar" class="btn btn-success" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-primary" asp-action="Index" asp-route-id="@contrato.IdContrato">Volver</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

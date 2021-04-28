@@ -1,4 +1,5 @@
 ﻿using InmoBecker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -29,13 +30,37 @@ namespace InmoBecker.Controllers
             public ActionResult Index()
         {
             
-                List<Contrato> lista = repositorioContrato.ObtenerTodos();
+                var lista = repositorioContrato.ObtenerTodos();
                 ViewBag.Id = TempData["Id"];
                 ViewData["Error"] = TempData["Error"];
                 if (TempData.ContainsKey("Mensaje"))
                     ViewBag.Mensaje = TempData["Mensaje"];
+                if (TempData.ContainsKey("Error"))
+                    ViewBag.Error = TempData["Error"];
                 return View(lista);
            
+        }
+
+       
+        public ActionResult Vigentes()
+        {
+            try
+            {
+                var hoy = DateTime.Now;
+                var lista = repositorioContrato.ContradosVigentes(hoy);
+                ViewBag.Id = TempData["Id"];
+                if (TempData.ContainsKey("Mensaje"))
+                    ViewBag.Mensaje = TempData["Mensaje"];
+                if (TempData.ContainsKey("Error"))
+                    ViewBag.Error = TempData["Error"];
+                return View("index", lista);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrace = ex.StackTrace;
+                return View();
+            }
         }
 
         // GET: ContratoController/Details/5
@@ -46,16 +71,27 @@ namespace InmoBecker.Controllers
         }
 
         // GET: ContratoController/Create
-        public ActionResult Create()
+        public ActionResult Create(string desde, string hasta)
         {
+            DateTime inicio = DateTime.Parse(desde);
+            DateTime fin = DateTime.Parse(hasta);
+            ViewBag.Desde = inicio;
+            ViewBag.Hasta = fin;
             ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            var Inmuebles = repositorioInmueble.BuscarPorFechas(inicio,fin);
+            if (Inmuebles.Count == 0)
+            {
+                TempData["Error"] = "No hay inmuebles disponibles en esa fecha";
+                return RedirectToAction(nameof(Index));
+            }
+            ViewBag.Inmuebles = Inmuebles;
             return View();
         }
 
         // POST: ContratoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+       
         public ActionResult Create(Contrato c)
         {
             try
@@ -70,7 +106,8 @@ namespace InmoBecker.Controllers
                 else
                 {
                     ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-                    ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                    ViewBag.Inmuebles = repositorioInmueble.BuscarPorFechas(c.FechaInicio, c.FechaCierre);
+                   
                     return View(c);
                 }
             }
@@ -78,26 +115,58 @@ namespace InmoBecker.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
+                ViewBag.StackTrace = ex.StackTrace;
                 return View(c);
             }
         }
 
-        // GET: ContratoController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Renovar(int id)
         {
-            var c = repositorioContrato.ObtenerPorId(id);
-            ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            var entidad = repositorioContrato.ObtenerPorId(id);
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             if (TempData.ContainsKey("Error"))
                 ViewBag.Error = TempData["Error"];
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+            ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+            return View(entidad);
+        }
+
+        public ActionResult VerContratos(int id)
+        {
+            try
+            {
+               // ViewBag.Id = id;
+                var lista = repositorioContrato.BuscarPorInmueble(id);
+
+                return View(lista);
+            }
+            catch (Exception ex)
+            {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrace = ex.StackTrace;
+                return View();
+            }
+        }
+
+        // GET: ContratoController/Edit/5
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Edit(int id)
+        {
+            var c = repositorioContrato.ObtenerPorId(id);
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
+            if (TempData.ContainsKey("Error"))
+                ViewBag.Error = TempData["Error"];
+            ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
+            ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
             return View(c);
         }
 
         // POST: ContratoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Contrato c)
         {
             try
@@ -110,8 +179,7 @@ namespace InmoBecker.Controllers
             }
             catch (Exception ex)
             {
-                ViewBag.Inquilinos = repositorioInquilino.ObtenerTodos();
-                ViewBag.Inmuebles = repositorioInmueble.ObtenerTodos();
+                
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(c);
@@ -119,10 +187,22 @@ namespace InmoBecker.Controllers
         }
 
         // GET: ContratoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var c = repositorioContrato.ObtenerPorId(id);
-         
+            var inicio = c.FechaInicio;
+            var final = c.FechaCierre;
+            var tiempoContrato = final - inicio;
+            var hoy = DateTime.Now;
+            if (final - hoy > tiempoContrato / 2)
+            {
+                ViewBag.Multa = c.Monto * 2;
+            }
+            else
+            {
+                ViewBag.Multa = c.Monto;
+            }
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
             if (TempData.ContainsKey("Error"))
@@ -133,6 +213,7 @@ namespace InmoBecker.Controllers
         // POST: ContratoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Contrato c)
         {
             try
@@ -145,6 +226,7 @@ namespace InmoBecker.Controllers
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
+                ViewBag.StackTrace = ex.StackTrace;
                 return View(c);
             }
         }

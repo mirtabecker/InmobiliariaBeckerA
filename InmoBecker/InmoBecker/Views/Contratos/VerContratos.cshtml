@@ -1,0 +1,66 @@
+﻿@model IEnumerable<InmoBecker.Models.Contrato>
+
+@{
+    ViewData["Title"] = "VerContratos";
+    
+}
+
+<h3>Contratos</h3>
+
+<p>
+    <a asp-action="Create" asp-route-id="@ViewBag.Id"></a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdContrato)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCierre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InquilinoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InmuebleId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdContrato)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Monto)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaInicio)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FechaCierre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InquilinoId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InmuebleId)
+                </td>
+              
+            </tr>
+        }
+    </tbody>
+</table>
+<div>
+    <a class="btn btn-secondary" asp-controller="Inmuebles" asp-action="Index"> Volver a Inmuebles </a>
+</div>

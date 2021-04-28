@@ -9,9 +9,8 @@ namespace InmoBecker.Models
 {
 	public enum enRoles
 	{
-		SuperAdministrador = 1,
-		Administrador = 2,
-		Empleado = 3,
+		Administrador = 1,
+		Empleado = 2,
 	}
 
 	public class Usuario

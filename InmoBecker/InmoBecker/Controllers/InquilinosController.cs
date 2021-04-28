@@ -1,4 +1,5 @@
 ﻿using InmoBecker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ namespace InmoBecker.Controllers
             this.configuration = configuration;
         }
         // GET: InquilinosController
+      
         public ActionResult Index()
         {
             try 
@@ -39,6 +41,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InquilinosController/Details/5
+      
         public ActionResult Details(int id)
         {
             var i = repositorioInquilino.ObtenerPorId(id);
@@ -55,6 +58,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Inquilino i)
         {
             try
@@ -90,6 +94,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, IFormCollection collection)
         {
             Inquilino i = null;
@@ -115,6 +120,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InquilinosController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var i = repositorioInquilino.ObtenerPorId(id);
@@ -129,6 +135,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Inquilino i)
         {
             try

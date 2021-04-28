@@ -1,4 +1,5 @@
 ﻿using InmoBecker.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +26,10 @@ namespace InmoBecker.Controllers
         }
 
         // GET: PagosController
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            List<Pago> lista = repositorioPago.ObtenerTodos();
+            ViewBag.Contrato = repositorioContrato.ObtenerPorId(id);
+            var lista = repositorioPago.ObtenerTodos(id);
             ViewBag.Id = TempData["Id"];
             if (TempData.ContainsKey("Mensaje"))
                 ViewBag.Mensaje = TempData["Mensaje"];
@@ -35,23 +37,26 @@ namespace InmoBecker.Controllers
         }
 
         // GET: PagosController/Details/5
+    
         public ActionResult Details(int id)
         {
             return View();
         }
 
         // GET: PagosController/Create
-        public ActionResult Create()
+       
+        public ActionResult Create(int id)
         {
-            //var pagos = repositorioPago.ObtenerTodos();
-            //ViewBag.Pago = pagos.Count();
-            ViewBag.Contrato = repositorioContrato.ObtenerTodos();
+            var pagos = repositorioPago.ObtenerTodos(id);
+            ViewBag.Pago = pagos.Count();
+            ViewBag.Contrato = repositorioContrato.ObtenerPorId(id);
             return View();
         }
 
         // POST: PagosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+       
         public ActionResult Create(Pago p)
         {
             try
@@ -60,7 +65,7 @@ namespace InmoBecker.Controllers
                 {
                     repositorioPago.Alta(p);
                     TempData["Id"] = p.IdPago;
-                    return RedirectToAction("Index");; //, "Pago", new { id = p.ContratoId });
+                    return RedirectToAction("Index", "Pagos", new {id = p.ContratoId});
                 }
                 else
                 {
@@ -77,6 +82,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: PagosController/Edit/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             var e = repositorioPago.ObtenerPorId(id);
@@ -90,13 +96,14 @@ namespace InmoBecker.Controllers
         // POST: PagosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Pago pago)
         {
             try
             {
                 repositorioPago.Modificacion(pago);
                 TempData["Mensaje"] = "Datos guardados correctamente";
-                return RedirectToAction("Index");//, "Pago", new { id = pago.ContratoId });
+                return RedirectToAction("Index","Pago", new { id = pago.ContratoId });
             }
             catch (Exception ex)
             {
@@ -107,6 +114,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: PagosController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
            
@@ -122,6 +130,7 @@ namespace InmoBecker.Controllers
         // POST: PagosController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Pago pago)
         {
             try

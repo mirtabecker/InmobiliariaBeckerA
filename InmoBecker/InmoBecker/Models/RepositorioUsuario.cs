@@ -79,7 +79,7 @@ namespace InmoBecker.Models
             int res = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"UPDATE Usuarios SET Nombre=@nombre, Apellido=@apellido, Avatar=@avatar, Email=@email, Clave=@clave, Rol=@rol " +
+                string sql = $"UPDATE Usuarios SET Nombre=@nombre, Apellido=@apellido, Avatar=@avatar, Email=@email, Rol=@rol " +
                     $"WHERE IdUsuario = @id";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
@@ -88,7 +88,6 @@ namespace InmoBecker.Models
                     command.Parameters.AddWithValue("@apellido", e.Apellido);
                     command.Parameters.AddWithValue("@avatar", e.Avatar);
                     command.Parameters.AddWithValue("@email", e.Email);
-                    command.Parameters.AddWithValue("@clave", e.Clave);
                     command.Parameters.AddWithValue("@rol", e.Rol);
                     command.Parameters.AddWithValue("@id", e.IdUsuario);
                     connection.Open();
@@ -103,8 +102,8 @@ namespace InmoBecker.Models
             List<Usuario> res = new List<Usuario>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string sql = $"SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Clave, Rol" +
-                    $" FROM Usuarios";
+                string sql = $" SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Clave, Rol " +
+                    $" FROM Usuarios ";
                 using (SqlCommand command = new SqlCommand(sql, connection))
                 {
                     command.CommandType = CommandType.Text;

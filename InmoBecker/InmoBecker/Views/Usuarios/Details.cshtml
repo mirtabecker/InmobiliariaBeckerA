@@ -1,10 +1,10 @@
 ﻿@model InmoBecker.Models.Usuario
 
 @{
-    ViewData["Title"] = "Detalles";
+    ViewData["Title"] = "Perfil";
 }
 
-<h1>Detalle</h1>
+<h1>Perfil</h1>
 
 <div>
     <h4>Usuario</h4>
@@ -56,6 +56,7 @@
     <a class="btn btn-success" asp-action="Edit" asp-route-id="@Model.IdUsuario">Editar</a>&emsp;
     @if (User.IsInRole("Administrador"))
     {
-<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.IdUsuario">Eliminar</a>}
+<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.IdUsuario">Eliminar</a>
+    }
     &emsp;<a class="btn btn-primary" asp-action="Index">Volver</a>
 </div>

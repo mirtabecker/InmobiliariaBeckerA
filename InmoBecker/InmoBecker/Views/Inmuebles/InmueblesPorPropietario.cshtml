@@ -1,21 +1,20 @@
 ﻿@model IEnumerable<InmoBecker.Models.Inmueble>
 
 @{
-    ViewData["Title"] = "Inmuebles";
+    ViewData["Title"] = "InmueblesPorPropietario";
 }
 
-<h1>Inmuebles</h1>
+<h3>Inmuebles que posee</h3>
 
 <p>
-    <a asp-action="Create">Crear Nuevo</a>
+    <a asp-action="Create" asp-route-id="@ViewBag.Id"></a>
 </p>
-
-<br />
-
 <table class="table">
     <thead>
         <tr>
-
+            <th>
+                @Html.DisplayNameFor(model => model.IdInmueble)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Direccion)
             </th>
@@ -32,18 +31,22 @@
                 @Html.DisplayNameFor(model => model.Precio)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.EstadoNombre)
+                @Html.DisplayNameFor(model => model.Estado)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PropietarioId)
             </th>
+
+            <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdInmueble)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Direccion)
                 </td>
@@ -60,20 +63,17 @@
                     @Html.DisplayFor(modelItem => item.Precio)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.EstadoNombre)
+                    @(item.EstadoNombre)
                 </td>
                 <td>
-                    @(item.Duenio.Nombre + " " + item.Duenio.Apellido)
+                    @(item.Duenio.Nombre + "" +item.Duenio.Apellido)
                 </td>
-                <td>
-                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdInmueble" title="Editar">Editar</a>
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdInmueble" title="Eliminar">Eliminar</a>
-                    }
-                        <a class="btn btn-outline-dark" asp-controller="Contratos" asp-action="VerContratos" asp-route-id="@item.IdInmueble" title="Alquileres">Ver Contrato</a>
-                    </td>
+
             </tr>
         }
     </tbody>
 </table>
+<div>
+    <a class="btn btn-secondary" asp-controller="Propietarios" asp-action="Index" > Volver a Propietarios </a>
+</div>
+
