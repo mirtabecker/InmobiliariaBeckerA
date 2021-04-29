@@ -21,8 +21,8 @@ namespace InmoBecker.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InquilinoId, c.InmuebleId " +
-					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato " +
-					$" WHERE IdPago = @idContrato ";
+					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato" +
+					$" WHERE IdContrato = @idContrato";
 				  
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -43,8 +43,8 @@ namespace InmoBecker.Models
 							{
 								IdContrato = reader.GetInt32(4),
 								Monto = reader.GetInt32(5),
-								InquilinoId = reader.GetInt32(7),
-								InmuebleId = reader.GetInt32(6),
+								InquilinoId = reader.GetInt32(6),
+								InmuebleId = reader.GetInt32(7),
 							}
 						};
 						res.Add(p);
@@ -60,9 +60,9 @@ namespace InmoBecker.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"INSERT INTO Pagos (NroPago, Fecha, Importe, ContratoId) " +
-					"VALUES (@pago, @fecha, @importe, @contratoId);" +
-					"SELECT SCOPE_IDENTITY();";//devuelve el id insertado (LAST_INSERT_ID para mysql)
-				using (var command = new SqlCommand(sql, connection))
+					$"VALUES (@pago, @fecha, @importe, @contratoId);" +
+					$"SELECT SCOPE_IDENTITY();";//devuelve el id insertado (LAST_INSERT_ID para mysql)
+				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@pago", p.NroPago);
@@ -79,21 +79,21 @@ namespace InmoBecker.Models
 		}
 		public Pago ObtenerPorId(int id)
 		{
-			Pago p = null;
+			Pago entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InmuebleId, c.InquilinoId" +
-					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato" +
-					$" WHERE p.IdPago=@id";
+				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InmuebleId, c.InquilinoId " +
+					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato " +
+					$" WHERE IdContrato=@idContrato";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+					command.Parameters.Add("@idContrato", SqlDbType.Int).Value = id;
 					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();
 					if (reader.Read())
 					{
-						p = new Pago
+						entidad = new Pago
 						{
 							IdPago = reader.GetInt32(0),
 							NroPago = reader.GetInt32(1),
@@ -112,7 +112,7 @@ namespace InmoBecker.Models
 					connection.Close();
 				}
 			}
-			return p;
+			return entidad;
 		}
 		public int Modificacion(Pago p)
 		{
@@ -121,7 +121,7 @@ namespace InmoBecker.Models
 			{
 				string sql = "UPDATE Pagos SET " +
 					"NroPago=@pago, Fecha=@fecha, Importe=@importe, ContratoId=@contratoId " +
-					"WHERE IdPago = @id";
+					"WHERE IdPago=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.Parameters.AddWithValue("@pago", p.NroPago);
@@ -142,7 +142,7 @@ namespace InmoBecker.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"DELETE FROM Pagos WHERE Idpago = {id}";
+				string sql = $"DELETE FROM Pagos WHERE IdPago = {id}";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -153,5 +153,44 @@ namespace InmoBecker.Models
 			}
 			return res;
 		}
+
+		public Pago Obtener(int id)
+		{
+			Pago entidad = null;
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				string sql = $"SELECT IdPago, NroPago, Fecha, Importe, ContratoId, c.Monto, c.InmuebleId, c.InquilinoId " +
+					$" FROM Pagos p INNER JOIN Contratos c ON p.ContratoId = c.IdContrato " +
+					$" WHERE IdPago=@idPago";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					command.Parameters.Add("@idPago", SqlDbType.Int).Value = id;
+					command.CommandType = CommandType.Text;
+					connection.Open();
+					var reader = command.ExecuteReader();
+					if (reader.Read())
+					{
+						entidad = new Pago
+						{
+							IdPago = reader.GetInt32(0),
+							NroPago = reader.GetInt32(1),
+							Fecha = reader.GetDateTime(2),
+							Importe = reader.GetDecimal(3),
+							ContratoId = reader.GetInt32(4),
+							Alquiler = new Contrato
+							{
+								IdContrato = reader.GetInt32(4),
+								Monto = reader.GetInt32(5),
+								InmuebleId = reader.GetInt32(6),
+								InquilinoId = reader.GetInt32(7),
+							}
+						};
+					}
+					connection.Close();
+				}
+			}
+			return entidad;
+		}
+
 	}
 }

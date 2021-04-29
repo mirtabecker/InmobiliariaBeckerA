@@ -84,7 +84,7 @@ namespace InmoBecker.Models
         }
 		public Contrato ObtenerPorId(int id)
 		{
-			Contrato c= null;
+			Contrato c = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"SELECT IdContrato, Monto, FechaInicio, FechaCierre, InquilinoId, InmuebleId, i.Nombre, i.Apellido, n.Direccion " +
@@ -233,12 +233,12 @@ namespace InmoBecker.Models
 							FechaInicio = reader.GetDateTime(2),
 							FechaCierre = reader.GetDateTime(3),
 							InquilinoId = reader.GetInt32(4),
-							InmuebleId = reader.GetInt32(5),
+							InmuebleId = reader.GetInt32(7),
 
 							Inquilino = new Inquilino
 							{
-								Nombre = reader.GetString(6),
-								Apellido = reader.GetString(7),
+								Nombre = reader.GetString(5),
+								Apellido = reader.GetString(6),
 							},
 							Inmueble = new Inmueble
 							{

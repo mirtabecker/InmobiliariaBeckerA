@@ -1,7 +1,7 @@
 ﻿@model InmoBecker.Models.Pago
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar";
 }
 
 <h1>Editar</h1>
@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="Id" value="@Model.IdPago" />
+            <input type="hidden" name="IdPgo" value="@Model.IdPago" />
             <div class="form-group">
                 <label asp-for="NroPago" class="control-label"></label>
                 <input asp-for="NroPago" class="form-control" />

@@ -26,10 +26,10 @@ namespace InmoBecker.Controllers
             this.repositorioInquilino = new RepositorioInquilino(configuration);
             this.configuration = configuration;
         }
-            // GET: ContratoController
-            public ActionResult Index()
+        // GET: ContratoController
+        [Authorize]
+        public ActionResult Index()
         {
-            
                 var lista = repositorioContrato.ObtenerTodos();
                 ViewBag.Id = TempData["Id"];
                 ViewData["Error"] = TempData["Error"];
@@ -53,7 +53,7 @@ namespace InmoBecker.Controllers
                     ViewBag.Mensaje = TempData["Mensaje"];
                 if (TempData.ContainsKey("Error"))
                     ViewBag.Error = TempData["Error"];
-                return View("index", lista);
+                return View(lista);
             }
             catch (Exception ex)
             {
@@ -71,6 +71,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: ContratoController/Create
+        [Authorize]
         public ActionResult Create(string desde, string hasta)
         {
             DateTime inicio = DateTime.Parse(desde);
@@ -91,7 +92,7 @@ namespace InmoBecker.Controllers
         // POST: ContratoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-       
+        [Authorize]
         public ActionResult Create(Contrato c)
         {
             try
@@ -119,7 +120,7 @@ namespace InmoBecker.Controllers
                 return View(c);
             }
         }
-
+        [Authorize]
         public ActionResult Renovar(int id)
         {
             var entidad = repositorioContrato.ObtenerPorId(id);
@@ -150,7 +151,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: ContratoController/Edit/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var c = repositorioContrato.ObtenerPorId(id);
@@ -166,7 +167,7 @@ namespace InmoBecker.Controllers
         // POST: ContratoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id, Contrato c)
         {
             try

@@ -25,6 +25,7 @@ namespace InmoBecker.Controllers
     }
 
         // GET: InmueblesController
+        [Authorize]
         public ActionResult Index()
         {
                 var lista = repositorioInmueble.ObtenerTodos();
@@ -35,7 +36,7 @@ namespace InmoBecker.Controllers
                 return View(lista);
             
         }
-
+        [Authorize]
         public ActionResult InmueblesPorPropietario(int id)
         {
                 var lista = repositorioInmueble.BuscarPorPropietario(id);
@@ -51,6 +52,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InmueblesController/Create
+        [Authorize]
         public ActionResult Create()
         {
 
@@ -62,7 +64,7 @@ namespace InmoBecker.Controllers
         // POST: InmueblesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        
+        [Authorize]
         public  ActionResult Create(Inmueble i)
         {
             try
@@ -91,7 +93,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InmueblesController/Edit/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
@@ -107,7 +109,7 @@ namespace InmoBecker.Controllers
         // POST: InmueblesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id, Inmueble i)
         {
             try

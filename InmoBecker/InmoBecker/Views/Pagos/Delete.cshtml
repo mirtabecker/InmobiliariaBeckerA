@@ -1,7 +1,7 @@
 ﻿@model InmoBecker.Models.Pago
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Eliminar";
 }
 
 <h1>Eliminar</h1>
@@ -44,9 +44,9 @@
     </dl>
     @if (User.IsInRole("Administrador"))
     {
-        <form asp-action="Delete">
-            <input type="submit" value="Eliminar" class="btn btn-danger" /> |
-            <a class="btn btn-primary" asp-action="Index" asp-route-id="@Model.ContratoId">Volver</a>
-        </form>
+<form asp-action="Delete">
+    <input type="submit" value="Eliminar" class="btn btn-danger" />
+    <a class="btn btn-primary" asp-action="Index">Volver</a>
+</form>
     }
     </div>

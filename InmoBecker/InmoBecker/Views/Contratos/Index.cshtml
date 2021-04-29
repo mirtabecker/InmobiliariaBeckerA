@@ -11,7 +11,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
         <a class="navbar-brand" asp-action="Index">Alquileres</a>
-        
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+                <a class="btn btn-outline-secondary" asp-action="Vigentes">Vigentes</a>
+            </li>
+        </ul>
+
         <form asp-action="Create" method="get" class="form-inline my-2 my-lg-0">
             Desde:<input class="form-control mr-sm-2" name="Desde" type="date" required>
             Hasta:<input class="form-control mr-sm-2" name="Hasta" type="date" required>

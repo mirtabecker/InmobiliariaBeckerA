@@ -22,7 +22,7 @@ namespace InmoBecker.Controllers
             this.configuration = configuration;
         }
         // GET: InquilinosController
-      
+        [Authorize]
         public ActionResult Index()
         {
             try 
@@ -41,7 +41,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InquilinosController/Details/5
-      
+        [Authorize]
         public ActionResult Details(int id)
         {
             var i = repositorioInquilino.ObtenerPorId(id);
@@ -49,6 +49,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InquilinosController/Create
+        [Authorize]
         public ActionResult Create()
         {
             
@@ -58,7 +59,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Create(Inquilino i)
         {
             try
@@ -81,6 +82,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: InquilinosController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var i = repositorioInquilino.ObtenerPorId(id);
@@ -94,7 +96,7 @@ namespace InmoBecker.Controllers
         // POST: InquilinosController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id, IFormCollection collection)
         {
             Inquilino i = null;

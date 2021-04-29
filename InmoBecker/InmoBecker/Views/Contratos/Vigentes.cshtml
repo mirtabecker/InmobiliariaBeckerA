@@ -1,0 +1,65 @@
+﻿@model IEnumerable<InmoBecker.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Contratos Vigentes";
+}
+
+<h3>Contratos Vigentes</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdContrato)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaCierre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InquilinoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InmuebleId)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdContrato)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCierre)
+            </td>
+            <td>
+                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido)
+            </td>
+            <td>
+                @(item.Inmueble.Direccion)
+            </td>
+            <td>
+                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdContrato" title="Editar">Editar</a>
+                <a class="btn btn-outline-info" asp-controller="Pagos" asp-action="Index" asp-route-id="@item.IdContrato" title="Pagos">Pagos</a>
+                <a class="btn btn-outline-info" asp-action="Renovar" asp-route-id="@item.IdContrato" title="Renovar">Renovar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="align-content-center"><a class="btn btn-secondary" asp-action="Index"> Volver a Contratos </a></div>

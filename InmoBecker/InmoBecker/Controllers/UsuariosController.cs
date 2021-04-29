@@ -30,8 +30,8 @@ namespace InmoBecker.Controllers
             this.configuration = configuration;
             this.environment = environment;
         }
-       
-        
+
+        [Authorize(Policy = "Administrador")]
         public ActionResult Index()
         {
             var usuarios = repositorioUsuario.ObtenerTodos();
@@ -61,7 +61,7 @@ namespace InmoBecker.Controllers
         }
 
         // GET: UsuariosController/Details/5
-     
+        [Authorize(Policy = "Administrador")]
         public ActionResult Details(int id)
         {
             var e = repositorioUsuario.ObtenerPorId(id);
@@ -79,7 +79,7 @@ namespace InmoBecker.Controllers
         // POST: UsuariosController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-       
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Usuario u)
         {
             if (!ModelState.IsValid)
@@ -131,7 +131,7 @@ namespace InmoBecker.Controllers
 
 
         // GET: Usuarios/Edit/5
-        [Authorize(Policy = "Administrador")]
+        [Authorize]
         public ActionResult Edit(int id)
         {
             ViewData["Title"] = "Editar Usuario";
