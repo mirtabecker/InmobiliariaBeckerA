@@ -15,6 +15,7 @@ namespace InmoBecker.Models
 
 	public class Usuario
     {
+		[Key]
 		[Display(Name = "Código")]
 		public int IdUsuario { get; set; }
 		[Required]

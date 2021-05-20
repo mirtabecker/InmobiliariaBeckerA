@@ -204,7 +204,7 @@ namespace InmoBecker.Models
 			}
 			return res;
 		}
-		public IList<Inmueble> BuscarPorFechas(DateTime ingreso, DateTime salida)
+		public List<Inmueble> BuscarPorFechas(DateTime ingreso, DateTime salida)
 		{
 			List<Inmueble> res = new List<Inmueble>();
 			Inmueble entidad = null;

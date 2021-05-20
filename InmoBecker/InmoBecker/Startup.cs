@@ -1,26 +1,32 @@
+﻿using InmoBecker.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+
 
 namespace InmoBecker
 {
-    public class Startup
-    {
+    public class Startup 
+     {
+        private readonly IConfiguration configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,18 +38,55 @@ namespace InmoBecker
                      options.LoginPath = "/Usuarios/Login";
                      options.LogoutPath = "/Usuarios/Logout";
                      options.AccessDeniedPath = "/Home/Restringido";
+                 })
+                 .AddJwtBearer(options =>//la api web valida con token
+                 {
+                 options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                 {
+                     ValidateIssuer = true,
+                     ValidateAudience = true,
+                     ValidateLifetime = true,
+                     ValidateIssuerSigningKey = true,
+                     ValidIssuer = configuration["TokenAuthentication:Issuer"],
+                     ValidAudience = configuration["TokenAuthentication:Audience"],
+                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII.GetBytes(configuration["TokenAuthentication:SecretKey"])),
+                 };
+                     options.Events = new JwtBearerEvents
+                     {
+                         OnMessageReceived = context =>
+                         {
+                             // Read the token out of the query string
+                             var accessToken = context.Request.Query["access_token"];
+                             // If the request is for our hub...
+                             var path = context.HttpContext.Request.Path;
+                             if (!string.IsNullOrEmpty(accessToken) &&
+                                 path.StartsWithSegments("/chatsegurohub"))
+                             {//reemplazar la url por la usada en la ruta ⬆
+                                 context.Token = accessToken;
+                             }
+                             return Task.CompletedTask;
+                         }
+                     };
                  });
+      
+        
             services.AddAuthorization(options =>
             {
-                //options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Empleado"));
-                options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador", "SuperAdministrador"));
+             //options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Empleado"));
+            options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+           
             });
 
+
+            services.AddDbContext<DataContext>(
+            options => options.UseSqlServer(
+            configuration["ConnectionStrings:DefaultConnection"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,7 +97,7 @@ namespace InmoBecker
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            // Uso de archivos est�ticos (*.html, *.css, *.js, etc.) 
+            // Uso de archivos estáticos (*.html, *.css, *.js, etc.) 
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -63,18 +106,11 @@ namespace InmoBecker
             {
                 MinimumSameSitePolicy = SameSiteMode.None,
             });
-            // Habilitar autenticaci�n
+            // Habilitar autenticación
             app.UseAuthentication();
             app.UseAuthorization();
-            // App en ambiente de desarrollo?
 
             app.UseHttpsRedirection();
-
-            app.UseStaticFiles();
-
-            app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

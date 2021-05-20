@@ -8,6 +8,7 @@ namespace InmoBecker.Models
 {
     public class Propietario
     {
+        [Key]
         [Display (Name = "Codigo")]
         public int IdPropietario { get; set; }
         [Required]
@@ -21,6 +22,7 @@ namespace InmoBecker.Models
         public string Telefono { get; set; }
         [Required, EmailAddress]
         public string Email { get; set; }
+        [Required, DataType(DataType.Password)]
         public string Clave { get; set; }
     }
 }
