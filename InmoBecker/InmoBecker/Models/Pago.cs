@@ -10,6 +10,7 @@ namespace InmoBecker.Models
     public class Pago
     {
 		[Display(Name = "Código")]
+		[Key]
 		public int IdPago { get; set; }
 		[Required]
 		[Display(Name = "Nro de Pago")]

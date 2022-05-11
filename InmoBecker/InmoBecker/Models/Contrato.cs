@@ -10,6 +10,7 @@ namespace InmoBecker.Models
     public class Contrato
     {
         [Display(Name ="Codigo")]
+        [Key]
         public int IdContrato { get; set; }
         public int Monto { get; set; }
         [Display(Name = "Inicia")]

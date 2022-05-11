@@ -40,7 +40,7 @@ namespace InmoBecker
                      options.AccessDeniedPath = "/Home/Restringido";
                  })
                  .AddJwtBearer(options =>//la api web valida con token
-                 {
+                 {   
                  options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                  {
                      ValidateIssuer = true,
@@ -77,6 +77,7 @@ namespace InmoBecker
            
             });
 
+            services.AddControllersWithViews();
 
             services.AddDbContext<DataContext>(
             options => options.UseSqlServer(

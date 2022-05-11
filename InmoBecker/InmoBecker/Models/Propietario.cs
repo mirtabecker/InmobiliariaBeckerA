@@ -10,6 +10,7 @@ namespace InmoBecker.Models
     {
         [Key]
         [Display (Name = "Codigo")]
+        
         public int IdPropietario { get; set; }
         [Required]
         public string Nombre { get; set; }

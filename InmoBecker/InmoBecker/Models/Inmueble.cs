@@ -15,6 +15,7 @@ namespace InmoBecker.Models
     public class Inmueble
     {
         [Display(Name = "Codigo")]
+        [Key]
         public int IdInmueble { get; set; }
         [Required]
         public string Direccion { get; set; }

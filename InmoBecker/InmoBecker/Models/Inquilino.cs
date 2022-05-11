@@ -9,6 +9,7 @@ namespace InmoBecker.Models
     public class Inquilino
     {
 		[Display (Name = "Codigo")]
+		[Key]
 		public int IdInquilino { get; set; }
 	
 		[Required]
