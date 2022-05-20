@@ -31,6 +31,7 @@ namespace InmoBecker.Api
            this.config = config;
         }
 
+       
 
         // GET: api/Propietarios
         [HttpGet]
@@ -40,7 +41,7 @@ namespace InmoBecker.Api
             {
                 var usuario = User.Identity.Name;
 
-                return await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
+             return await contexto.Propietarios.SingleOrDefaultAsync(x => x.Email == usuario);
             }               
             catch (Exception ex)
             {
@@ -48,24 +49,12 @@ namespace InmoBecker.Api
             }
         }
 
-     [HttpGet("{id}")]
-     public async Task<IActionResult> Get(int id)
-        {
-            try
-            {
-                var entidad = await contexto.Propietarios.SingleOrDefaultAsync(x => x.IdPropietario == id);
-                return entidad != null ? Ok(entidad) : NotFound();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
+     
 
       
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromForm] LoginView loginView)
+        public async Task<IActionResult> Login([FromBody] LoginView loginView)
                 
        {
             try
@@ -109,70 +98,12 @@ namespace InmoBecker.Api
             }
         }
 
-        // POST api/<PropietariosController>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromForm]Propietario entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    await contexto.Propietarios.AddAsync(entidad);
-                    contexto.SaveChanges();
-                    return CreatedAtAction(nameof(Get), new { id = entidad.IdPropietario }, entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
 
-        // PUT api/<PropietariosController>/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromForm] Propietario entidad)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    entidad.IdPropietario = id;
-                    contexto.Propietarios.Update(entidad);
-                    await contexto.SaveChangesAsync();
-                    return Ok(entidad);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
 
-        // DELETE api/<PropietariosController>/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var p = contexto.Propietarios.Find(id);
-                    if (p == null)
-                        return NotFound();
-                    contexto.Propietarios.Remove(p);
-                    contexto.SaveChanges();
-                    return Ok(p);
-                }
-                return BadRequest();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex);
-            }
-        }
-        // GET: api/Propietarios/test
+
+
+
+
         [HttpGet("test")]
         [AllowAnonymous]
         public IActionResult Test()

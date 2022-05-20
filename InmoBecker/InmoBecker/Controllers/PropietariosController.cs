@@ -1,5 +1,6 @@
 ﻿using InmoBecker.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -98,9 +99,15 @@ namespace InmoBecker.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    int res = repositorioPropietario.Alta(p);
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: p.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+                    p.Clave = hashed;
+                    repositorioPropietario.Alta(p);
                     TempData["Id"] = p.IdPropietario;
-                    TempData["Mensaje"] = "Se creo con exito el PROPIETARIO";
                     return RedirectToAction(nameof(Index));
                 }
                 else

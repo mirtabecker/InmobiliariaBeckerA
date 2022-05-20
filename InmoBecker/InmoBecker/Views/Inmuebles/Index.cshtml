@@ -35,45 +35,58 @@
                 @Html.DisplayNameFor(model => model.EstadoNombre)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Imagen)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.PropietarioId)
             </th>
+
+
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
 
-                <td>
-                    @Html.DisplayFor(modelItem => item.Direccion)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Ambientes)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Superficie)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tipo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Precio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstadoNombre)
-                </td>
-                <td>
-                    @(item.Duenio.Nombre + " " + item.Duenio.Apellido)
-                </td>
-                <td>
-                    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdInmueble" title="Editar">Editar</a>
-                    @if (User.IsInRole("Administrador"))
-                    {
-                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdInmueble" title="Eliminar">Eliminar</a>
-                    }
-                        <a class="btn btn-outline-dark" asp-controller="Contratos" asp-action="VerContratos" asp-route-id="@item.IdInmueble" title="Alquileres">Ver Contrato</a>
-                    </td>
-            </tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direccion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ambientes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Superficie)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Tipo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Precio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EstadoNombre)
+
+            </td>
+            <td>
+                <a asp-action="Imagen" asp-route-id="@item.IdInmueble" title="@item.Imagen"><img width="60" src="@item.Imagen" /></a>
+            </td>
+
+            <td>
+                @(item.Duenio.Nombre + " " + item.Duenio.Apellido)
+            </td>
+
+
+
+            <td>
+                <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@item.IdInmueble" title="Editar">Editar</a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.IdInmueble" title="Eliminar">Eliminar</a>
+                }
+                <a class="btn btn-outline-dark" asp-controller="Contratos" asp-action="VerContratos" asp-route-id="@item.IdInmueble" title="Alquileres">Ver Contrato</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

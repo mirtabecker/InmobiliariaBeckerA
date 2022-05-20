@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -28,11 +29,16 @@ namespace InmoBecker.Models
         public int Precio { get; set; }
         [Display(Name = "Estado")]
         public int Estado { get; set; }
+        public string Imagen { get; set; }
+        [NotMapped]
+        public IFormFile ImagenFile { get; set; }
+
         [ForeignKey(nameof(PropietarioId))]
         [Display(Name = "Propietario")]
         public int PropietarioId { get; set; }
         public Propietario Duenio { get; set; }
         
+
         public string EstadoNombre => Estado > 0 ? ((enEstados)Estado).ToString().Replace('_', ' ') : "";
         public static IDictionary<int, string> ObtenerEstados()
         {

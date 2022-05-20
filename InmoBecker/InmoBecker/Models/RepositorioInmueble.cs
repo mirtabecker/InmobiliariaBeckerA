@@ -20,8 +20,8 @@ namespace InmoBecker.Models
 			List<Inmueble> res = new List<Inmueble>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, PropietarioId,"+
-					" p.Nombre, p.Apellido" +
+				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, Imagen," +
+					$" PropietarioId, p.Nombre, p.Apellido" +
 					" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.IdPropietario" ;
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -39,13 +39,15 @@ namespace InmoBecker.Models
 							Tipo = reader.GetString(4),
 							Precio = reader.GetInt32(5),
 							Estado = reader.GetInt32(6),
-							PropietarioId = reader.GetInt32(7),
+							Imagen = reader["Imagen"].ToString(),
+							PropietarioId = reader.GetInt32(8),
 							Duenio = new Propietario
 							{
-								IdPropietario = reader.GetInt32(7),
-								Nombre = reader.GetString(8),
-								Apellido = reader.GetString(9),								
+								IdPropietario = reader.GetInt32(8),
+								Nombre = reader.GetString(9),
+								Apellido = reader.GetString(10),								
 							}
+							
 						};
 						res.Add(i);
 					}
@@ -59,8 +61,8 @@ namespace InmoBecker.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Tipo, Precio, Estado, PropietarioId) " +
-					"VALUES (@direccion, @ambientes, @superficie, @tipo, @Precio, @estado, @propietarioId);" +
+				string sql = $"INSERT INTO Inmuebles (Direccion, Ambientes, Superficie, Tipo, Precio, Estado, Imagen, PropietarioId) " +
+					"VALUES (@direccion, @ambientes, @superficie, @tipo, @Precio, @estado, @imagen, @propietarioId);" +
 					"SELECT SCOPE_IDENTITY();";
 				using (var command = new SqlCommand(sql, connection))
 				{
@@ -71,7 +73,12 @@ namespace InmoBecker.Models
 					command.Parameters.AddWithValue("@tipo", i.Tipo);
 					command.Parameters.AddWithValue("@Precio", i.Precio);
 					command.Parameters.AddWithValue("@estado", i.Estado);
+					if (String.IsNullOrEmpty(i.Imagen))
+						command.Parameters.AddWithValue("@imagen", DBNull.Value);
+					else
+						command.Parameters.AddWithValue("@imagen", i.Imagen);
 					command.Parameters.AddWithValue("@propietarioId", i.PropietarioId);
+					
 					connection.Open();
 					res = Convert.ToInt32(command.ExecuteScalar());
 					i.IdInmueble = res;
@@ -85,7 +92,8 @@ namespace InmoBecker.Models
 			Inmueble i = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, PropietarioId, p.Nombre, p.Apellido" +
+				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, Imagen, PropietarioId, " +
+					$" p.Nombre, p.Apellido" +
 					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.IdPropietario" +
 					$" WHERE IdInmueble=@id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -105,13 +113,15 @@ namespace InmoBecker.Models
 							Tipo = reader.GetString(4),
 							Precio = reader.GetInt32(5),
 							Estado = reader.GetInt32(6),
-							PropietarioId = reader.GetInt32(7),
+							Imagen = reader["Imagen"].ToString(),
+							PropietarioId = reader.GetInt32(8),
 							Duenio = new Propietario
 							{
-								IdPropietario = reader.GetInt32(7),
-								Nombre = reader.GetString(8),
-								Apellido = reader.GetString(9),
+								IdPropietario = reader.GetInt32(8),
+								Nombre = reader.GetString(9),
+								Apellido = reader.GetString(10),
 							}
+							
 						};
 					}
 					connection.Close();
@@ -125,7 +135,7 @@ namespace InmoBecker.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = "UPDATE Inmuebles SET " +
-					"Direccion=@direccion, Ambientes=@ambientes, Superficie=@superficie, Tipo=@tipo, Precio=@precio, Estado=@estado, PropietarioId=@propietarioId " +
+					"Direccion=@direccion, Ambientes=@ambientes, Superficie=@superficie, Tipo=@tipo, Precio=@precio, Estado=@estado, Imagen= @imagen, PropietarioId=@propietarioId " +
 					"WHERE IdInmueble = @id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -136,9 +146,11 @@ namespace InmoBecker.Models
 					command.Parameters.AddWithValue("@tipo", i.Tipo);
 					command.Parameters.AddWithValue("@precio", i.Precio);
 					command.Parameters.AddWithValue("@estado", i.Estado);
+					command.Parameters.AddWithValue("@imagen", i.Imagen);
 					command.Parameters.AddWithValue("@propietarioId", i.PropietarioId);
 					command.Parameters.AddWithValue("@id", i.IdInmueble);
 					
+
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();
@@ -168,7 +180,8 @@ namespace InmoBecker.Models
 			Inmueble e = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, PropietarioId, p.Nombre, p.Apellido" +
+				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, Imagen" +
+					$" PropietarioId, p.Nombre, p.Apellido" +
 					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.IdPropietario" +
 					$" WHERE PropietarioId = @id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -188,13 +201,15 @@ namespace InmoBecker.Models
 							Tipo = reader.GetString(4),
 							Precio = reader.GetInt32(5),
 							Estado = reader.GetInt32(6),
-							PropietarioId = reader.GetInt32(7),
+							Imagen = reader["Imagen"].ToString(),
+							PropietarioId = reader.GetInt32(8),
 							Duenio = new Propietario
 							{
-								IdPropietario = reader.GetInt32(7),
-								Nombre = reader.GetString(8),
-								Apellido = reader.GetString(9),
+								IdPropietario = reader.GetInt32(8),
+								Nombre = reader.GetString(9),
+								Apellido = reader.GetString(10),
 							}
+							
 
 						};
 						res.Add(e);
@@ -210,7 +225,8 @@ namespace InmoBecker.Models
 			Inmueble entidad = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, PropietarioId, p.Nombre, p.Apellido" +
+				string sql = $"SELECT IdInmueble, Direccion, Ambientes, Superficie, Tipo, Precio, Estado, Imagen, PropietarioId," +
+					$" p.Nombre, p.Apellido" +
 					$" FROM Inmuebles i INNER JOIN Propietarios p ON i.PropietarioId = p.IdPropietario LEFT JOIN Contratos c ON i.IdInmueble = c.InmuebleId " +
 					$" WHERE FechaInicio > @salida OR FechaCierre < @ingreso OR c.IdContrato IS NULL AND i.Estado = 1";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -231,13 +247,15 @@ namespace InmoBecker.Models
 							Tipo = reader.GetString(4),
 							Precio = reader.GetInt32(5),
 							Estado = reader.GetInt32(6),
-							PropietarioId = reader.GetInt32(7),
+							Imagen = reader["Imagen"].ToString(),
+							PropietarioId = reader.GetInt32(8),
 							Duenio = new Propietario
 							{
-								IdPropietario = reader.GetInt32(7),
-								Nombre = reader.GetString(8),
-								Apellido = reader.GetString(9),
-							}
+								IdPropietario = reader.GetInt32(8),
+								Nombre = reader.GetString(9),
+								Apellido = reader.GetString(10),
+							},
+							
 						};
 						res.Add(entidad);
 					}

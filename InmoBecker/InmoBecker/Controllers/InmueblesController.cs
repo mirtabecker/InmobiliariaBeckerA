@@ -1,11 +1,13 @@
 ﻿using InmoBecker.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,12 +17,15 @@ namespace InmoBecker.Controllers
     {
        private readonly RepositorioInmueble repositorioInmueble;
        private readonly RepositorioPropietario repositorioPropietario;
-       private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
 
-        public InmueblesController(IConfiguration configuration)
+        private readonly IConfiguration configuration;
+
+        public InmueblesController(IConfiguration configuration, IWebHostEnvironment environment)
     { 
         this.repositorioInmueble = new RepositorioInmueble(configuration);
         this.repositorioPropietario = new RepositorioPropietario(configuration);
+        this.environment = environment;
         this.configuration = configuration;
     }
 
@@ -67,33 +72,55 @@ namespace InmoBecker.Controllers
         [Authorize]
         public  ActionResult Create(Inmueble i)
         {
-            try
-            {
-                if (ModelState.IsValid)
+            
+             try
                 {
-                    repositorioInmueble.Alta(i);
-                    TempData["Id"] = i.IdInmueble;
-                    TempData["Mensaje"] = "Se dio de alta con exito al inmueble";
-                    return RedirectToAction(nameof(Index));
+                    if (ModelState.IsValid)
+                    {
+                        var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
+                        int res = repositorioInmueble.Alta(i);
+                        if (i.ImagenFile != null && i.IdInmueble > 0)
+                        {
+                            string wwwPath = environment.WebRootPath;
+                            string path = Path.Combine(wwwPath, "Uploads");
+                            if (!Directory.Exists(path))
+                            {
+                                Directory.CreateDirectory(path);
+                            }
+                            //Path.GetFileName(u.AvatarFile.Fileame);//este nombre se puede repetir
+                            string fileName = "inmueble_" + i.IdInmueble + Path.GetExtension(i.ImagenFile.FileName);
+                            string pathCompleto = Path.Combine(path, fileName);
+                            i.Imagen = Path.Combine("/Uploads", fileName);
+                            using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                            {
+                                i.ImagenFile.CopyTo(stream);
+                            }
+                            repositorioInmueble.Modificacion(i);
+                        }
+                      //  TempData["Id"] = i.IdInmueble;
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                   {
+                   ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+                        return View(i);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                   
-                    ViewBag.Propietarios = repositorioPropietario.ObtenerTodos();
+                    ViewBag.Error = ex.Message;
+                    ViewBag.StackTrace = ex.StackTrace;
                     return View(i);
-                }
-            }
-            catch (Exception ex)
-            {
-               
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrete = ex.StackTrace;
-                return View(i);
-            }
+               }
         }
 
-        // GET: InmueblesController/Edit/5
-        [Authorize]
+
+
+
+
+
+            // GET: InmueblesController/Edit/5
+            [Authorize]
         public ActionResult Edit(int id)
         {
             var i = repositorioInmueble.ObtenerPorId(id);
