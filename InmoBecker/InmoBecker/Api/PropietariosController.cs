@@ -99,6 +99,50 @@ namespace InmoBecker.Api
         }
 
 
+        // POST api/<PropietariosController>/login
+        [HttpGet("propietarioActual")]
+        //public async Task<IActionResult> PropietarioActual([FromBody] LoginView loginView)
+        public async Task<IActionResult> PropietarioActual()
+        {
+            try
+            {
+                return Ok(
+                    contexto.Propietarios
+
+                    .Select(x => new { x.IdPropietario, x.Nombre, x.Apellido, x.Dni, x.Email, x.Clave, x.Telefono })
+                    .FirstOrDefault(x => x.Email == User.Identity.Name));
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
+        [HttpPut("editar")]
+        public async Task<IActionResult> Put([FromBody] Propietario entidad)
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                var res = contexto.Propietarios.AsNoTracking().FirstOrDefault(x => x.Email == usuario);
+
+                if (ModelState.IsValid && res != null)
+                {
+                    entidad.IdPropietario= res.IdPropietario;
+                    entidad.Email = res.Email;
+                    contexto.Entry(entidad).State = EntityState.Modified;
+                    //contexto.Propietarios.Update(entidad);
+                    await contexto.SaveChangesAsync();
+                    return Ok(entidad);
+                }
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
 
 
 
