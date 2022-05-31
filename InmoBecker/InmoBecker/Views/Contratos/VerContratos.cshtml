@@ -37,27 +37,28 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IdContrato)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Monto)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaInicio)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FechaCierre)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InquilinoId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InmuebleId)
-                </td>
-              
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdContrato)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaCierre)
+            </td>
+
+            <td>
+                @(item.Inquilino.Apellido + " " + item.Inquilino.Apellido)
+            </td>
+            <td>
+                @(item.Inmueble.Direccion)
+            </td>
+
+        </tr>
         }
     </tbody>
 </table>

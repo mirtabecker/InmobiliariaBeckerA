@@ -51,7 +51,7 @@
         @foreach (var item in Model)
         {
         <tr>
-           
+
             <td>
                 @Html.DisplayFor(modelItem => item.Monto)
             </td>
@@ -62,11 +62,14 @@
                 @Html.DisplayFor(modelItem => item.FechaCierre)
             </td>
             <td>
-                @(item.Inquilino.Nombre + " " + item.Inquilino.Apellido )
+                @(item.Inquilino.Apellido + " " + item.Inquilino.Apellido)
             </td>
             <td>
-                @(item.Inmueble.Direccion)
+                @(item.Inmueble.Direccion + " " + item.Inmueble.Direccion)
             </td>
+
+
+            
 
             <td>
 

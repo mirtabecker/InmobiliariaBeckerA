@@ -25,7 +25,7 @@ namespace InmoBecker.Models
         [ForeignKey("InquilinoId")]
         [Display(Name = "Direccion")]
         public int InmuebleId { get; set; }
-        [ForeignKey("InmuebleId")]
+        //[ForeignKey("InmuebleId")]
         public Inquilino Inquilino { get; set; }
         public Inmueble Inmueble { get; set; }
 
